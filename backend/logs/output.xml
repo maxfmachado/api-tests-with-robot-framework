@@ -1,0 +1,1337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 4.0.1 (Python 3.8.2 on win32)" generated="20210808 22:49:19.251" rpa="false" schemaversion="2">
+<suite id="s1" name="Tests" source="C:\RobotXpert\rocklov\backend\tests">
+<suite id="s1-s1" name="Login" source="C:\RobotXpert\rocklov\backend\tests\login.robot">
+<test id="s1-s1-t1" name="Successfully logged in">
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>login_attempt.json</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:19.669" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:19.669" level="INFO">${fixture} = {
+    "login_success": 
+        {
+            "email": "max@gmail.com",
+            "password": "mudar123"
+        },
+        
+    "incorrect_pwd": 
+        {
+            "email": "max@gmail.com",
+   ...</msg>
+<status status="PASS" starttime="20210808 22:49:19.668" endtime="20210808 22:49:19.669"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:19.676" level="INFO">${json} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:19.669" endtime="20210808 22:49:19.676"/>
+</kw>
+<msg timestamp="20210808 22:49:19.677" level="INFO">${payload} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:19.668" endtime="20210808 22:49:19.677"/>
+</kw>
+<kw name="POST Login" library="sessions">
+<var>${response}</var>
+<arg>${payload['login_success']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/sessions</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:20.913" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/sessions 
+ path_url=/sessions 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '50', 'Content-Type': 'application/json'} 
+ body=b'{"email": "max@gmail.com", "password": "mudar123"}' 
+ </msg>
+<msg timestamp="20210808 22:49:20.913" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/sessions 
+ status=200, reason=OK 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '41', 'Etag': 'W/"29-+9v0FYhmkaWqU00frj1Ry9fRajw"', 'Date': 'Mon, 09 Aug 2021 01:49:20 GMT', 'Via': '1.1 vegur'} 
+ body={"user_token":"610eedbe542318001551a696"} 
+ </msg>
+<msg timestamp="20210808 22:49:20.914" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:19.679" endtime="20210808 22:49:20.914"/>
+</kw>
+<msg timestamp="20210808 22:49:20.914" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:19.678" endtime="20210808 22:49:20.914"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>200</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:20.915" endtime="20210808 22:49:20.915"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${token}</var>
+<arg>${response.json()}[user_token]</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20210808 22:49:20.916" level="INFO">${token} = 610eedbe542318001551a696</msg>
+<status status="PASS" starttime="20210808 22:49:20.916" endtime="20210808 22:49:20.916"/>
+</kw>
+<kw name="Length Should Be" library="BuiltIn">
+<arg>${token}</arg>
+<arg>24</arg>
+<doc>Verifies that the length of the given item is correct.</doc>
+<msg timestamp="20210808 22:49:20.917" level="INFO">Length is 24</msg>
+<status status="PASS" starttime="20210808 22:49:20.917" endtime="20210808 22:49:20.917"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:19.667" endtime="20210808 22:49:20.919"/>
+</test>
+<test id="s1-s1-t2" name="Login with no success">
+<kw name="Login Attempt" library="sessions">
+<arg>login_attempt.json</arg>
+<arg>incorrect_pwd</arg>
+<arg>401</arg>
+<arg>Unauthorized</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:20.923" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:20.923" level="INFO">${fixture} = {
+    "login_success": 
+        {
+            "email": "max@gmail.com",
+            "password": "mudar123"
+        },
+        
+    "incorrect_pwd": 
+        {
+            "email": "max@gmail.com",
+   ...</msg>
+<status status="PASS" starttime="20210808 22:49:20.922" endtime="20210808 22:49:20.923"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:20.924" level="INFO">${json} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:20.923" endtime="20210808 22:49:20.924"/>
+</kw>
+<msg timestamp="20210808 22:49:20.924" level="INFO">${payload} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:20.922" endtime="20210808 22:49:20.924"/>
+</kw>
+<kw name="POST Login" library="sessions">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/sessions</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:21.864" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/sessions 
+ path_url=/sessions 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '48', 'Content-Type': 'application/json'} 
+ body=b'{"email": "max@gmail.com", "password": "abc123"}' 
+ </msg>
+<msg timestamp="20210808 22:49:21.865" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/sessions 
+ status=401, reason=Unauthorized 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '24', 'Etag': 'W/"18-XPDV80vbMk4yY1/PADG4jYM4rSI"', 'Date': 'Mon, 09 Aug 2021 01:49:21 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"Unauthorized"} 
+ </msg>
+<msg timestamp="20210808 22:49:21.865" level="INFO">${response} = &lt;Response [401]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:20.926" endtime="20210808 22:49:21.866"/>
+</kw>
+<msg timestamp="20210808 22:49:21.867" level="INFO">${response} = &lt;Response [401]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:20.925" endtime="20210808 22:49:21.867"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>${status_code}</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:21.867" endtime="20210808 22:49:21.868"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:21.868" endtime="20210808 22:49:21.870"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:20.921" endtime="20210808 22:49:21.870"/>
+</kw>
+<kw name="Login Attempt" library="sessions">
+<arg>login_attempt.json</arg>
+<arg>wrong_email</arg>
+<arg>412</arg>
+<arg>wrong email</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:21.874" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:21.875" level="INFO">${fixture} = {
+    "login_success": 
+        {
+            "email": "max@gmail.com",
+            "password": "mudar123"
+        },
+        
+    "incorrect_pwd": 
+        {
+            "email": "max@gmail.com",
+   ...</msg>
+<status status="PASS" starttime="20210808 22:49:21.874" endtime="20210808 22:49:21.875"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:21.876" level="INFO">${json} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:21.875" endtime="20210808 22:49:21.876"/>
+</kw>
+<msg timestamp="20210808 22:49:21.877" level="INFO">${payload} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:21.873" endtime="20210808 22:49:21.877"/>
+</kw>
+<kw name="POST Login" library="sessions">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/sessions</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:22.657" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/sessions 
+ path_url=/sessions 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '49', 'Content-Type': 'application/json'} 
+ body=b'{"email": "ma2x#gmail.com", "password": "abc123"}' 
+ </msg>
+<msg timestamp="20210808 22:49:22.658" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/sessions 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '23', 'Etag': 'W/"17-J+BxLoUN8ST7m7fP0enwagCQK4E"', 'Date': 'Mon, 09 Aug 2021 01:49:22 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"wrong email"} 
+ </msg>
+<msg timestamp="20210808 22:49:22.658" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:21.878" endtime="20210808 22:49:22.658"/>
+</kw>
+<msg timestamp="20210808 22:49:22.659" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:21.877" endtime="20210808 22:49:22.659"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>${status_code}</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:22.659" endtime="20210808 22:49:22.660"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:22.660" endtime="20210808 22:49:22.662"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:21.872" endtime="20210808 22:49:22.662"/>
+</kw>
+<kw name="Login Attempt" library="sessions">
+<arg>login_attempt.json</arg>
+<arg>user_not_found</arg>
+<arg>401</arg>
+<arg>Unauthorized</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:22.666" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:22.667" level="INFO">${fixture} = {
+    "login_success": 
+        {
+            "email": "max@gmail.com",
+            "password": "mudar123"
+        },
+        
+    "incorrect_pwd": 
+        {
+            "email": "max@gmail.com",
+   ...</msg>
+<status status="PASS" starttime="20210808 22:49:22.666" endtime="20210808 22:49:22.667"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:22.669" level="INFO">${json} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:22.668" endtime="20210808 22:49:22.669"/>
+</kw>
+<msg timestamp="20210808 22:49:22.669" level="INFO">${payload} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:22.665" endtime="20210808 22:49:22.669"/>
+</kw>
+<kw name="POST Login" library="sessions">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/sessions</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:23.580" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/sessions 
+ path_url=/sessions 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '49', 'Content-Type': 'application/json'} 
+ body=b'{"email": "ma2x@gmail.com", "password": "abc123"}' 
+ </msg>
+<msg timestamp="20210808 22:49:23.581" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/sessions 
+ status=401, reason=Unauthorized 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '24', 'Etag': 'W/"18-XPDV80vbMk4yY1/PADG4jYM4rSI"', 'Date': 'Mon, 09 Aug 2021 01:49:23 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"Unauthorized"} 
+ </msg>
+<msg timestamp="20210808 22:49:23.581" level="INFO">${response} = &lt;Response [401]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:22.672" endtime="20210808 22:49:23.581"/>
+</kw>
+<msg timestamp="20210808 22:49:23.581" level="INFO">${response} = &lt;Response [401]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:22.669" endtime="20210808 22:49:23.581"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>${status_code}</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:23.581" endtime="20210808 22:49:23.582"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:23.582" endtime="20210808 22:49:23.583"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:22.664" endtime="20210808 22:49:23.583"/>
+</kw>
+<kw name="Login Attempt" library="sessions">
+<arg>login_attempt.json</arg>
+<arg>empty_email</arg>
+<arg>412</arg>
+<arg>required email</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:23.585" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:23.585" level="INFO">${fixture} = {
+    "login_success": 
+        {
+            "email": "max@gmail.com",
+            "password": "mudar123"
+        },
+        
+    "incorrect_pwd": 
+        {
+            "email": "max@gmail.com",
+   ...</msg>
+<status status="PASS" starttime="20210808 22:49:23.584" endtime="20210808 22:49:23.585"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:23.586" level="INFO">${json} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:23.585" endtime="20210808 22:49:23.586"/>
+</kw>
+<msg timestamp="20210808 22:49:23.586" level="INFO">${payload} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:23.584" endtime="20210808 22:49:23.586"/>
+</kw>
+<kw name="POST Login" library="sessions">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/sessions</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:24.339" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/sessions 
+ path_url=/sessions 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '35', 'Content-Type': 'application/json'} 
+ body=b'{"email": "", "password": "abc123"}' 
+ </msg>
+<msg timestamp="20210808 22:49:24.339" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/sessions 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '26', 'Etag': 'W/"1a-8KRaSvY57iDhlue9EjFWx2TpquE"', 'Date': 'Mon, 09 Aug 2021 01:49:24 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"required email"} 
+ </msg>
+<msg timestamp="20210808 22:49:24.339" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:23.587" endtime="20210808 22:49:24.339"/>
+</kw>
+<msg timestamp="20210808 22:49:24.340" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:23.586" endtime="20210808 22:49:24.340"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>${status_code}</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:24.340" endtime="20210808 22:49:24.340"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:24.340" endtime="20210808 22:49:24.341"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:23.584" endtime="20210808 22:49:24.341"/>
+</kw>
+<kw name="Login Attempt" library="sessions">
+<arg>login_attempt.json</arg>
+<arg>empty_pwd</arg>
+<arg>412</arg>
+<arg>required password</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:24.343" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:24.344" level="INFO">${fixture} = {
+    "login_success": 
+        {
+            "email": "max@gmail.com",
+            "password": "mudar123"
+        },
+        
+    "incorrect_pwd": 
+        {
+            "email": "max@gmail.com",
+   ...</msg>
+<status status="PASS" starttime="20210808 22:49:24.343" endtime="20210808 22:49:24.344"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:24.344" level="INFO">${json} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:24.344" endtime="20210808 22:49:24.344"/>
+</kw>
+<msg timestamp="20210808 22:49:24.345" level="INFO">${payload} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:24.343" endtime="20210808 22:49:24.345"/>
+</kw>
+<kw name="POST Login" library="sessions">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/sessions</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:25.065" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/sessions 
+ path_url=/sessions 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '42', 'Content-Type': 'application/json'} 
+ body=b'{"email": "max@gmail.com", "password": ""}' 
+ </msg>
+<msg timestamp="20210808 22:49:25.065" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/sessions 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '29', 'Etag': 'W/"1d-tUn0yUHtqO1XqLN8GlARJKKNdM8"', 'Date': 'Mon, 09 Aug 2021 01:49:25 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"required password"} 
+ </msg>
+<msg timestamp="20210808 22:49:25.066" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:24.346" endtime="20210808 22:49:25.066"/>
+</kw>
+<msg timestamp="20210808 22:49:25.066" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:24.345" endtime="20210808 22:49:25.066"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>${status_code}</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:25.066" endtime="20210808 22:49:25.067"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:25.067" endtime="20210808 22:49:25.068"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:24.342" endtime="20210808 22:49:25.068"/>
+</kw>
+<kw name="Login Attempt" library="sessions">
+<arg>login_attempt.json</arg>
+<arg>without_email</arg>
+<arg>412</arg>
+<arg>required email</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:25.070" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:25.070" level="INFO">${fixture} = {
+    "login_success": 
+        {
+            "email": "max@gmail.com",
+            "password": "mudar123"
+        },
+        
+    "incorrect_pwd": 
+        {
+            "email": "max@gmail.com",
+   ...</msg>
+<status status="PASS" starttime="20210808 22:49:25.069" endtime="20210808 22:49:25.070"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:25.071" level="INFO">${json} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:25.070" endtime="20210808 22:49:25.071"/>
+</kw>
+<msg timestamp="20210808 22:49:25.071" level="INFO">${payload} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:25.069" endtime="20210808 22:49:25.071"/>
+</kw>
+<kw name="POST Login" library="sessions">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/sessions</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:25.793" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/sessions 
+ path_url=/sessions 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '24', 'Content-Type': 'application/json'} 
+ body=b'{"password": "mudar123"}' 
+ </msg>
+<msg timestamp="20210808 22:49:25.793" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/sessions 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '26', 'Etag': 'W/"1a-8KRaSvY57iDhlue9EjFWx2TpquE"', 'Date': 'Mon, 09 Aug 2021 01:49:25 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"required email"} 
+ </msg>
+<msg timestamp="20210808 22:49:25.794" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:25.072" endtime="20210808 22:49:25.794"/>
+</kw>
+<msg timestamp="20210808 22:49:25.795" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:25.071" endtime="20210808 22:49:25.795"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>${status_code}</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:25.796" endtime="20210808 22:49:25.798"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:25.799" endtime="20210808 22:49:25.802"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:25.068" endtime="20210808 22:49:25.803"/>
+</kw>
+<kw name="Login Attempt" library="sessions">
+<arg>login_attempt.json</arg>
+<arg>without_pwd</arg>
+<arg>412</arg>
+<arg>required password</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:25.838" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\login_attempt.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:25.842" level="INFO">${fixture} = {
+    "login_success": 
+        {
+            "email": "max@gmail.com",
+            "password": "mudar123"
+        },
+        
+    "incorrect_pwd": 
+        {
+            "email": "max@gmail.com",
+   ...</msg>
+<status status="PASS" starttime="20210808 22:49:25.836" endtime="20210808 22:49:25.843"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:25.851" level="INFO">${json} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:25.846" endtime="20210808 22:49:25.852"/>
+</kw>
+<msg timestamp="20210808 22:49:25.853" level="INFO">${payload} = {'login_success': {'email': 'max@gmail.com', 'password': 'mudar123'}, 'incorrect_pwd': {'email': 'max@gmail.com', 'password': 'abc123'}, 'wrong_email': {'email': 'ma2x#gmail.com', 'password': 'abc123'...</msg>
+<status status="PASS" starttime="20210808 22:49:25.828" endtime="20210808 22:49:25.853"/>
+</kw>
+<kw name="POST Login" library="sessions">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/sessions</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:26.638" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/sessions 
+ path_url=/sessions 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '26', 'Content-Type': 'application/json'} 
+ body=b'{"email": "max@gmail.com"}' 
+ </msg>
+<msg timestamp="20210808 22:49:26.639" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/sessions 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '29', 'Etag': 'W/"1d-tUn0yUHtqO1XqLN8GlARJKKNdM8"', 'Date': 'Mon, 09 Aug 2021 01:49:26 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"required password"} 
+ </msg>
+<msg timestamp="20210808 22:49:26.639" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:25.866" endtime="20210808 22:49:26.639"/>
+</kw>
+<msg timestamp="20210808 22:49:26.640" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:25.854" endtime="20210808 22:49:26.640"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>${status_code}</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:26.640" endtime="20210808 22:49:26.641"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:26.641" endtime="20210808 22:49:26.642"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:25.822" endtime="20210808 22:49:26.642"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:20.920" endtime="20210808 22:49:26.643"/>
+</test>
+<doc>Sessions route tests</doc>
+<status status="PASS" starttime="20210808 22:49:19.288" endtime="20210808 22:49:26.645"/>
+</suite>
+<suite id="s1-s2" name="Signup" source="C:\RobotXpert\rocklov\backend\tests\signup.robot">
+<test id="s1-s2-t1" name="Add new user">
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>signup.json</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:26.666" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:26.667" level="INFO">${fixture} = {
+  "new_user": {
+    "name": "Baby Jane",
+    "email": "bj@xtina.com",
+    "password": "xtina"
+  },
+
+  "duplicated_user": {
+    "name": "Peter Quill",
+    "email": "pq@xtina.com",
+    "password": "pe...</msg>
+<status status="PASS" starttime="20210808 22:49:26.666" endtime="20210808 22:49:26.667"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:26.669" level="INFO">${json} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:26.667" endtime="20210808 22:49:26.670"/>
+</kw>
+<msg timestamp="20210808 22:49:26.670" level="INFO">${payload} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:26.665" endtime="20210808 22:49:26.670"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${new_user}</var>
+<arg>${payload['new_user']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20210808 22:49:26.672" level="INFO">${new_user} = {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}</msg>
+<status status="PASS" starttime="20210808 22:49:26.671" endtime="20210808 22:49:26.672"/>
+</kw>
+<kw name="Remove User By Email" library="mongo">
+<arg>${new_user['email']}</arg>
+<status status="PASS" starttime="20210808 22:49:26.673" endtime="20210808 22:49:26.913"/>
+</kw>
+<kw name="POST User" library="signup">
+<var>${response}</var>
+<arg>${new_user}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/signup</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:27.947" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/signup 
+ path_url=/signup 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '67', 'Content-Type': 'application/json'} 
+ body=b'{"name": "Baby Jane", "email": "bj@xtina.com", "password": "xtina"}' 
+ </msg>
+<msg timestamp="20210808 22:49:27.947" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/signup 
+ status=200, reason=OK 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '130', 'Etag': 'W/"82-jAlEwS8oxxIFyzOLl3Sn+HGNg4k"', 'Date': 'Mon, 09 Aug 2021 01:49:27 GMT', 'Via': '1.1 vegur'} 
+ body={"_id":"611089a703daf100153f6a70","name":"Baby Jane","email":"bj@xtina.com","password":"66b85c8daf5a2e94bf1706e08e54e6e6","__v":0} 
+ </msg>
+<msg timestamp="20210808 22:49:27.947" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:26.914" endtime="20210808 22:49:27.947"/>
+</kw>
+<msg timestamp="20210808 22:49:27.947" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:26.913" endtime="20210808 22:49:27.947"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>200</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:27.948" endtime="20210808 22:49:27.948"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:26.664" endtime="20210808 22:49:27.949"/>
+</test>
+<test id="s1-s2-t2" name="Duplicated Email">
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>signup.json</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:27.952" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:27.952" level="INFO">${fixture} = {
+  "new_user": {
+    "name": "Baby Jane",
+    "email": "bj@xtina.com",
+    "password": "xtina"
+  },
+
+  "duplicated_user": {
+    "name": "Peter Quill",
+    "email": "pq@xtina.com",
+    "password": "pe...</msg>
+<status status="PASS" starttime="20210808 22:49:27.952" endtime="20210808 22:49:27.952"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:27.953" level="INFO">${json} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:27.953" endtime="20210808 22:49:27.953"/>
+</kw>
+<msg timestamp="20210808 22:49:27.953" level="INFO">${payload} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:27.951" endtime="20210808 22:49:27.954"/>
+</kw>
+<kw name="POST User" library="signup">
+<arg>${payload['duplicated_user']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/signup</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:28.780" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/signup 
+ path_url=/signup 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '69', 'Content-Type': 'application/json'} 
+ body=b'{"name": "Peter Quill", "email": "pq@xtina.com", "password": "peter"}' 
+ </msg>
+<msg timestamp="20210808 22:49:28.780" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/signup 
+ status=409, reason=Conflict 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '47', 'Etag': 'W/"2f-6vgYhFf+FNZGgYfaQq8uG8nL6FU"', 'Date': 'Mon, 09 Aug 2021 01:49:28 GMT', 'Via': '1.1 vegur'} 
+ body={"code":1001,"error":"Email already exists :("} 
+ </msg>
+<msg timestamp="20210808 22:49:28.780" level="INFO">${response} = &lt;Response [409]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:27.955" endtime="20210808 22:49:28.780"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:27.954" endtime="20210808 22:49:28.780"/>
+</kw>
+<kw name="POST User" library="signup">
+<var>${response}</var>
+<arg>${payload['duplicated_user']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/signup</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:29.606" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/signup 
+ path_url=/signup 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '69', 'Content-Type': 'application/json'} 
+ body=b'{"name": "Peter Quill", "email": "pq@xtina.com", "password": "peter"}' 
+ </msg>
+<msg timestamp="20210808 22:49:29.606" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/signup 
+ status=409, reason=Conflict 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '47', 'Etag': 'W/"2f-6vgYhFf+FNZGgYfaQq8uG8nL6FU"', 'Date': 'Mon, 09 Aug 2021 01:49:29 GMT', 'Via': '1.1 vegur'} 
+ body={"code":1001,"error":"Email already exists :("} 
+ </msg>
+<msg timestamp="20210808 22:49:29.606" level="INFO">${response} = &lt;Response [409]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:28.782" endtime="20210808 22:49:29.606"/>
+</kw>
+<msg timestamp="20210808 22:49:29.606" level="INFO">${response} = &lt;Response [409]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:28.781" endtime="20210808 22:49:29.606"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>409</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:29.607" endtime="20210808 22:49:29.609"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:27.951" endtime="20210808 22:49:29.610"/>
+</test>
+<test id="s1-s2-t3" name="Signup Attempt">
+<kw name="Signup Attempt" library="signup">
+<arg>signup.json</arg>
+<arg>empty_name</arg>
+<arg>required name</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:29.615" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:29.616" level="INFO">${fixture} = {
+  "new_user": {
+    "name": "Baby Jane",
+    "email": "bj@xtina.com",
+    "password": "xtina"
+  },
+
+  "duplicated_user": {
+    "name": "Peter Quill",
+    "email": "pq@xtina.com",
+    "password": "pe...</msg>
+<status status="PASS" starttime="20210808 22:49:29.614" endtime="20210808 22:49:29.616"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:29.617" level="INFO">${json} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:29.616" endtime="20210808 22:49:29.617"/>
+</kw>
+<msg timestamp="20210808 22:49:29.618" level="INFO">${payload} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:29.614" endtime="20210808 22:49:29.618"/>
+</kw>
+<kw name="POST User" library="signup">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/signup</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:30.347" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/signup 
+ path_url=/signup 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '60', 'Content-Type': 'application/json'} 
+ body=b'{"name": "", "email": "etge@xtina.com", "password": "peter"}' 
+ </msg>
+<msg timestamp="20210808 22:49:30.347" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/signup 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '25', 'Etag': 'W/"19-8apYp5yIZ4Lt0/70KtMmuiuknDU"', 'Date': 'Mon, 09 Aug 2021 01:49:30 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"required name"} 
+ </msg>
+<msg timestamp="20210808 22:49:30.347" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:29.619" endtime="20210808 22:49:30.347"/>
+</kw>
+<msg timestamp="20210808 22:49:30.347" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:29.618" endtime="20210808 22:49:30.347"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>412</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:30.348" endtime="20210808 22:49:30.348"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:30.348" endtime="20210808 22:49:30.349"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:29.613" endtime="20210808 22:49:30.349"/>
+</kw>
+<kw name="Signup Attempt" library="signup">
+<arg>signup.json</arg>
+<arg>empty_email</arg>
+<arg>required email</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:30.351" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:30.352" level="INFO">${fixture} = {
+  "new_user": {
+    "name": "Baby Jane",
+    "email": "bj@xtina.com",
+    "password": "xtina"
+  },
+
+  "duplicated_user": {
+    "name": "Peter Quill",
+    "email": "pq@xtina.com",
+    "password": "pe...</msg>
+<status status="PASS" starttime="20210808 22:49:30.351" endtime="20210808 22:49:30.352"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:30.352" level="INFO">${json} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:30.352" endtime="20210808 22:49:30.352"/>
+</kw>
+<msg timestamp="20210808 22:49:30.353" level="INFO">${payload} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:30.351" endtime="20210808 22:49:30.353"/>
+</kw>
+<kw name="POST User" library="signup">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/signup</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:31.066" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/signup 
+ path_url=/signup 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '61', 'Content-Type': 'application/json'} 
+ body=b'{"name": "Kylie Minogue", "email": "", "password": "minogue"}' 
+ </msg>
+<msg timestamp="20210808 22:49:31.066" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/signup 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '26', 'Etag': 'W/"1a-8KRaSvY57iDhlue9EjFWx2TpquE"', 'Date': 'Mon, 09 Aug 2021 01:49:31 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"required email"} 
+ </msg>
+<msg timestamp="20210808 22:49:31.066" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:30.354" endtime="20210808 22:49:31.066"/>
+</kw>
+<msg timestamp="20210808 22:49:31.066" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:30.353" endtime="20210808 22:49:31.066"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>412</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:31.067" endtime="20210808 22:49:31.067"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:31.067" endtime="20210808 22:49:31.068"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:30.350" endtime="20210808 22:49:31.068"/>
+</kw>
+<kw name="Signup Attempt" library="signup">
+<arg>signup.json</arg>
+<arg>empty_pwd</arg>
+<arg>required password</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:31.071" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:31.071" level="INFO">${fixture} = {
+  "new_user": {
+    "name": "Baby Jane",
+    "email": "bj@xtina.com",
+    "password": "xtina"
+  },
+
+  "duplicated_user": {
+    "name": "Peter Quill",
+    "email": "pq@xtina.com",
+    "password": "pe...</msg>
+<status status="PASS" starttime="20210808 22:49:31.070" endtime="20210808 22:49:31.071"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:31.072" level="INFO">${json} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:31.071" endtime="20210808 22:49:31.072"/>
+</kw>
+<msg timestamp="20210808 22:49:31.072" level="INFO">${payload} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:31.070" endtime="20210808 22:49:31.072"/>
+</kw>
+<kw name="POST User" library="signup">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/signup</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:31.807" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/signup 
+ path_url=/signup 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '64', 'Content-Type': 'application/json'} 
+ body=b'{"name": "Liza Anne", "email": "liza@xtina.com", "password": ""}' 
+ </msg>
+<msg timestamp="20210808 22:49:31.807" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/signup 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '29', 'Etag': 'W/"1d-tUn0yUHtqO1XqLN8GlARJKKNdM8"', 'Date': 'Mon, 09 Aug 2021 01:49:31 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"required password"} 
+ </msg>
+<msg timestamp="20210808 22:49:31.807" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:31.073" endtime="20210808 22:49:31.807"/>
+</kw>
+<msg timestamp="20210808 22:49:31.807" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:31.072" endtime="20210808 22:49:31.807"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>412</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:31.807" endtime="20210808 22:49:31.808"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:31.808" endtime="20210808 22:49:31.810"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:31.069" endtime="20210808 22:49:31.810"/>
+</kw>
+<kw name="Signup Attempt" library="signup">
+<arg>signup.json</arg>
+<arg>without_name</arg>
+<arg>required name</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:31.813" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:31.813" level="INFO">${fixture} = {
+  "new_user": {
+    "name": "Baby Jane",
+    "email": "bj@xtina.com",
+    "password": "xtina"
+  },
+
+  "duplicated_user": {
+    "name": "Peter Quill",
+    "email": "pq@xtina.com",
+    "password": "pe...</msg>
+<status status="PASS" starttime="20210808 22:49:31.812" endtime="20210808 22:49:31.813"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:31.815" level="INFO">${json} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:31.814" endtime="20210808 22:49:31.815"/>
+</kw>
+<msg timestamp="20210808 22:49:31.815" level="INFO">${payload} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:31.812" endtime="20210808 22:49:31.815"/>
+</kw>
+<kw name="POST User" library="signup">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/signup</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:32.526" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/signup 
+ path_url=/signup 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '54', 'Content-Type': 'application/json'} 
+ body=b'{"email": "workaround@xtina.com", "password": "peter"}' 
+ </msg>
+<msg timestamp="20210808 22:49:32.527" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/signup 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '25', 'Etag': 'W/"19-8apYp5yIZ4Lt0/70KtMmuiuknDU"', 'Date': 'Mon, 09 Aug 2021 01:49:32 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"required name"} 
+ </msg>
+<msg timestamp="20210808 22:49:32.528" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:31.816" endtime="20210808 22:49:32.528"/>
+</kw>
+<msg timestamp="20210808 22:49:32.528" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:31.815" endtime="20210808 22:49:32.528"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>412</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:32.528" endtime="20210808 22:49:32.529"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:32.529" endtime="20210808 22:49:32.530"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:31.811" endtime="20210808 22:49:32.530"/>
+</kw>
+<kw name="Signup Attempt" library="signup">
+<arg>signup.json</arg>
+<arg>without_email</arg>
+<arg>required email</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:32.533" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:32.533" level="INFO">${fixture} = {
+  "new_user": {
+    "name": "Baby Jane",
+    "email": "bj@xtina.com",
+    "password": "xtina"
+  },
+
+  "duplicated_user": {
+    "name": "Peter Quill",
+    "email": "pq@xtina.com",
+    "password": "pe...</msg>
+<status status="PASS" starttime="20210808 22:49:32.533" endtime="20210808 22:49:32.533"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:32.534" level="INFO">${json} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:32.534" endtime="20210808 22:49:32.534"/>
+</kw>
+<msg timestamp="20210808 22:49:32.535" level="INFO">${payload} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:32.532" endtime="20210808 22:49:32.535"/>
+</kw>
+<kw name="POST User" library="signup">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/signup</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:33.248" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/signup 
+ path_url=/signup 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '41', 'Content-Type': 'application/json'} 
+ body=b'{"name": "Tove Lo", "password": "tovelo"}' 
+ </msg>
+<msg timestamp="20210808 22:49:33.248" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/signup 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '26', 'Etag': 'W/"1a-8KRaSvY57iDhlue9EjFWx2TpquE"', 'Date': 'Mon, 09 Aug 2021 01:49:33 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"required email"} 
+ </msg>
+<msg timestamp="20210808 22:49:33.248" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:32.536" endtime="20210808 22:49:33.248"/>
+</kw>
+<msg timestamp="20210808 22:49:33.249" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:32.535" endtime="20210808 22:49:33.249"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>412</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:33.249" endtime="20210808 22:49:33.249"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:33.250" endtime="20210808 22:49:33.251"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:32.531" endtime="20210808 22:49:33.251"/>
+</kw>
+<kw name="Signup Attempt" library="signup">
+<arg>signup.json</arg>
+<arg>without_pwd</arg>
+<arg>required password</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:33.254" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:33.255" level="INFO">${fixture} = {
+  "new_user": {
+    "name": "Baby Jane",
+    "email": "bj@xtina.com",
+    "password": "xtina"
+  },
+
+  "duplicated_user": {
+    "name": "Peter Quill",
+    "email": "pq@xtina.com",
+    "password": "pe...</msg>
+<status status="PASS" starttime="20210808 22:49:33.254" endtime="20210808 22:49:33.255"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:33.256" level="INFO">${json} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:33.255" endtime="20210808 22:49:33.256"/>
+</kw>
+<msg timestamp="20210808 22:49:33.256" level="INFO">${payload} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:33.253" endtime="20210808 22:49:33.257"/>
+</kw>
+<kw name="POST User" library="signup">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/signup</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:34.017" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/signup 
+ path_url=/signup 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '43', 'Content-Type': 'application/json'} 
+ body=b'{"name": "Lana", "email": "lana@xtina.com"}' 
+ </msg>
+<msg timestamp="20210808 22:49:34.017" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/signup 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '29', 'Etag': 'W/"1d-tUn0yUHtqO1XqLN8GlARJKKNdM8"', 'Date': 'Mon, 09 Aug 2021 01:49:34 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"required password"} 
+ </msg>
+<msg timestamp="20210808 22:49:34.017" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:33.258" endtime="20210808 22:49:34.017"/>
+</kw>
+<msg timestamp="20210808 22:49:34.017" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:33.257" endtime="20210808 22:49:34.017"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>412</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:34.018" endtime="20210808 22:49:34.018"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:34.018" endtime="20210808 22:49:34.019"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:33.252" endtime="20210808 22:49:34.019"/>
+</kw>
+<kw name="Signup Attempt" library="signup">
+<arg>signup.json</arg>
+<arg>wrong_email</arg>
+<arg>wrong email</arg>
+<kw name="Get Json" library="helpers">
+<var>${payload}</var>
+<arg>${json_file}</arg>
+<kw name="Get File" library="OperatingSystem">
+<var>${fixture}</var>
+<arg>${EXECDIR}/resources/fixtures/${file_name}</arg>
+<doc>Returns the contents of a specified file.</doc>
+<msg timestamp="20210808 22:49:34.021" level="INFO" html="true">Getting file '&lt;a href="file://C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json"&gt;C:\RobotXpert\rocklov\backend\resources\fixtures\signup.json&lt;/a&gt;'.</msg>
+<msg timestamp="20210808 22:49:34.022" level="INFO">${fixture} = {
+  "new_user": {
+    "name": "Baby Jane",
+    "email": "bj@xtina.com",
+    "password": "xtina"
+  },
+
+  "duplicated_user": {
+    "name": "Peter Quill",
+    "email": "pq@xtina.com",
+    "password": "pe...</msg>
+<status status="PASS" starttime="20210808 22:49:34.021" endtime="20210808 22:49:34.022"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads($fixture)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20210808 22:49:34.022" level="INFO">${json} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:34.022" endtime="20210808 22:49:34.022"/>
+</kw>
+<msg timestamp="20210808 22:49:34.023" level="INFO">${payload} = {'new_user': {'name': 'Baby Jane', 'email': 'bj@xtina.com', 'password': 'xtina'}, 'duplicated_user': {'name': 'Peter Quill', 'email': 'pq@xtina.com', 'password': 'peter'}, 'empty_name': {'name': '', '...</msg>
+<status status="PASS" starttime="20210808 22:49:34.020" endtime="20210808 22:49:34.023"/>
+</kw>
+<kw name="POST User" library="signup">
+<var>${response}</var>
+<arg>${payload['${json_obj}']}</arg>
+<kw name="POST" library="RequestsLibrary">
+<var>${response}</var>
+<arg>${base_url}/signup</arg>
+<arg>json=${payload}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request.</doc>
+<msg timestamp="20210808 22:49:34.775" level="INFO">POST Request : url=https://rocklov-api-max.herokuapp.com/signup 
+ path_url=/signup 
+ headers={'User-Agent': 'python-requests/2.26.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '73', 'Content-Type': 'application/json'} 
+ body=b'{"name": "Hollie Col", "email": "hollie$xtina.com", "password": "hollie"}' 
+ </msg>
+<msg timestamp="20210808 22:49:34.775" level="INFO">POST Response : url=https://rocklov-api-max.herokuapp.com/signup 
+ status=412, reason=Precondition Failed 
+ headers={'Server': 'Cowboy', 'Connection': 'keep-alive', 'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '23', 'Etag': 'W/"17-J+BxLoUN8ST7m7fP0enwagCQK4E"', 'Date': 'Mon, 09 Aug 2021 01:49:34 GMT', 'Via': '1.1 vegur'} 
+ body={"error":"wrong email"} 
+ </msg>
+<msg timestamp="20210808 22:49:34.775" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:34.024" endtime="20210808 22:49:34.775"/>
+</kw>
+<msg timestamp="20210808 22:49:34.775" level="INFO">${response} = &lt;Response [412]&gt;</msg>
+<status status="PASS" starttime="20210808 22:49:34.023" endtime="20210808 22:49:34.775"/>
+</kw>
+<kw name="Status Should Be" library="RequestsLibrary">
+<arg>412</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" starttime="20210808 22:49:34.775" endtime="20210808 22:49:34.776"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${message}</arg>
+<arg>${response.json()}[error]</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" starttime="20210808 22:49:34.776" endtime="20210808 22:49:34.777"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:34.020" endtime="20210808 22:49:34.778"/>
+</kw>
+<status status="PASS" starttime="20210808 22:49:29.612" endtime="20210808 22:49:34.779"/>
+</test>
+<doc>Signup Tests</doc>
+<status status="PASS" starttime="20210808 22:49:26.647" endtime="20210808 22:49:34.780"/>
+</suite>
+<status status="PASS" starttime="20210808 22:49:19.254" endtime="20210808 22:49:34.783"/>
+</suite>
+<statistics>
+<total>
+<stat pass="5" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="5" fail="0" skip="0" id="s1" name="Tests">Tests</stat>
+<stat pass="2" fail="0" skip="0" id="s1-s1" name="Login">Tests.Login</stat>
+<stat pass="3" fail="0" skip="0" id="s1-s2" name="Signup">Tests.Signup</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
