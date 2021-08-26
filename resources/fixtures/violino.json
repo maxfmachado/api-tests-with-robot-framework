@@ -1,0 +1,8 @@
+{
+    "payload": {
+        "name": "Violino",
+        "category": "Cordas",
+        "price": 100
+    },
+    "thumb": "violino.png"
+}
