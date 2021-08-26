@@ -1,0 +1,53 @@
+{
+  "new_user": {
+    "name": "Baby Jane",
+    "email": "bj@xtina.com",
+    "password": "xtina"
+  },
+
+  "duplicated_user": {
+    "name": "Peter Quill",
+    "email": "pq@xtina.com",
+    "password": "peter"
+  },
+
+  "empty_name": {
+    "name": "",
+    "email": "etge@xtina.com",
+    "password": "peter"
+  },
+
+  "empty_email": {
+    "name": "Kylie Minogue",
+    "email": "",
+    "password": "minogue"
+  },
+
+  "empty_pwd": {
+    "name": "Liza Anne",
+    "email": "liza@xtina.com",
+    "password": ""
+  },
+
+  "without_name": {
+    "email": "workaround@xtina.com",
+    "password": "peter"
+  },
+
+  "without_email": {
+    "name": "Tove Lo",
+    "password": "tovelo"
+  },
+
+  "without_pwd": {
+    "name": "Lana",
+    "email": "lana@xtina.com"
+  },
+
+  "wrong_email": {
+    "name": "Hollie Col",
+    "email": "hollie$xtina.com",
+    "password": "hollie"
+  }
+}
+
