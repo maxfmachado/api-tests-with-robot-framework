@@ -1,5 +1,1 @@
-# rocklov-api 🎸🤖
-
-Testes da api do Rocklov utilizando a lib [Requests](https://marketsquare.github.io/robotframework-requests/doc/RequestsLibrary.html) do Robot.
-
-
+API tests using [RobotFW Requests Lib](https://marketsquare.github.io/robotframework-requests/doc/RequestsLibrary.html).
